@@ -1,0 +1,43 @@
+{
+  "root": true,
+  "env": {
+    "es2020": true,
+    "node": true
+  },
+  "extends": [
+    "standard",
+    "eslint:recommended"
+  ],
+  "parserOptions": {
+    "ecmaVersion": 11,
+    "sourceType": "module"
+  },
+  "globals": {
+    "expect": true,
+    "it": true,
+    "describe": true,
+    "beforeAll": true,
+    "beforeEach": true,
+    "afterEach": true,
+    "jest": true
+  },
+  "rules": {
+    "no-console": "error",
+    "no-await-in-loop": "error",
+    "no-extra-parens": "error",
+    "no-loss-of-precision": "error",
+    "no-template-curly-in-string": "error"
+  },
+  "ignorePatterns": [
+    "coverage",
+    "node_modules"
+  ],
+  "overrides": [
+    {
+      "files": "src/app/support/error-handlers/*.js",
+      "rules": {
+        "handle-callback-err": "off"
+      }
+    }
+  ]
+}
