@@ -22,13 +22,7 @@ const ErrorHandler = require('./app/ErrorHandler')
 const Database = require('./app/Database')
 
 // Controllers imports
-// const AuthController = require('./app/controllers/AuthController')
-// const UploadsController = require('./app/controllers/UploadsController')
-// const TransactionsController = require('./app/controllers/TransactionsController')
-// const CustomerPointsController = require('./app/controllers/CustomerPointsController')
-// const CardsController = require('./app/controllers/CardsController')
-// const ProfilesController = require('./app/controllers/ProfilesController')
-// const StoresController = require('./app/controllers/StoresController')
+const UserController = require('./app/controllers/UserController')
 
 // Error handlers imports
 const BadRequestErrorHandler = require('./app/support/error-handlers/BadRequestErrorHandler')
@@ -49,7 +43,8 @@ container.register({
   httpServer: asClass(HttpServer).singleton(),
   apiRouter: asClass(ApiRouter).singleton(),
   errorHandler: asClass(ErrorHandler).singleton(),
-  database: asClass(Database).singleton()
+  database: asClass(Database).singleton(),
+  defaultErrorHandler: asClass(InternalServerErrorHandler).singleton()
 })
 
 // Configs injection
@@ -70,18 +65,21 @@ container.loadModules(['src/app/middlewares/**/!(*.spec).js'], {
   }
 })
 
+// Validators injection
+container.loadModules(['src/app/validators/**/!(*.spec).js'], {
+  formatName: 'camelCase',
+  resolverOptions: {
+    register: asClass,
+    lifetime: Lifetime.SINGLETON
+  }
+})
+
 // Controllers injection
-// container.register({
-//   controllers: asArray([
-//     asClass(AuthController).singleton(),
-//     asClass(UploadsController).singleton(),
-//     asClass(TransactionsController).singleton(),
-//     asClass(CustomerPointsController).singleton(),
-//     asClass(CardsController).singleton(),
-//     asClass(ProfilesController).singleton(),
-//     asClass(StoresController).singleton()
-//   ])
-// })
+container.register({
+  controllers: asArray([
+    asClass(UserController).singleton()
+  ])
+})
 
 // Services injection
 container.loadModules(['src/app/services/!(*.spec).js'], {
@@ -92,10 +90,32 @@ container.loadModules(['src/app/services/!(*.spec).js'], {
   }
 })
 
-// Models injection
-container.loadModules(['src/app/models/**/!(*.spec).js'], {
+// Collections injection
+container.loadModules([
+  ['src/app/collections/**/!(*.spec).js', { injector: () => ({ timeout: 2000 }) }]
+], {
   resolverOptions: {
-    register: asValue,
+    register: asClass,
+    lifetime: Lifetime.SINGLETON
+  }
+})
+
+// Repositories injection
+container.loadModules([
+  ['src/app/repositories/**/!(*.spec).js']
+], {
+  formatName: 'camelCase',
+  resolverOptions: {
+    register: asClass,
+    lifetime: Lifetime.SINGLETON
+  }
+})
+
+// Schemas injection
+container.loadModules(['src/app/schemas/**/!(*.spec).js'], {
+  formatName: 'camelCase',
+  resolverOptions: {
+    register: asFunction,
     lifetime: Lifetime.SINGLETON
   }
 })
