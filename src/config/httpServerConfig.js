@@ -1,5 +1,6 @@
-const httpServerPort = process.env.PORT
+const env = process.env.NODE_ENV || 'development'
 
-const httpServerConfig = { httpServerPort }
+const httpServerPort = process.env.PORT
+const httpServerConfig = { httpServerPort, env }
 
 module.exports = () => httpServerConfig
