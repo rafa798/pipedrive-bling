@@ -2,7 +2,7 @@ const { Router } = require('express')
 
 class UsersService {
   constructor ({ usersService, userValidator }) {
-    this.service = usersService
+    this.usersService = usersService
     this.validator = userValidator
   }
 
@@ -15,13 +15,26 @@ class UsersService {
       this.userSignup.bind(this)
     )
 
+    router.post(
+      '/user/signin',
+      this.validator.userSignIn.bind(this.validator),
+      this.userSignin.bind(this)
+    )
+
     return router
   }
 
   userSignup ({ body }, res, next) {
-    return this.service
-      .usersSignUp(body)
+    return this.usersService
+      .signup(body)
       .then((result) => res.status(201).send(result))
+      .catch((err) => next(err))
+  }
+
+  userSignin ({ body }, res, next) {
+    return this.usersService
+      .signin(body)
+      .then((result) => res.status(200).send(result))
       .catch((err) => next(err))
   }
 }

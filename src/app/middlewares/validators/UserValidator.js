@@ -36,6 +36,30 @@ const userSignUpSchema = {
   }
 }
 
+const userSignInSchema = {
+  properties: {
+    body: {
+      type: 'object',
+      required: [
+        'emailAddress',
+        'password'
+      ],
+      additionalProperties: false,
+      properties: {
+        emailAddress: {
+          type: 'string',
+          format: 'email'
+        },
+        password: {
+          type: 'string',
+          minLength: 4,
+          maxLength: 256
+        }
+      }
+    }
+  }
+}
+
 class UserValidator {
   constructor ({ ajv }) {
     this.ajv = ajv
@@ -53,6 +77,10 @@ class UserValidator {
 
   userSignUp (req, res, next) {
     return this.validate(userSignUpSchema, req, next)
+  }
+
+  userSignIn (req, res, next) {
+    return this.validate(userSignInSchema, req, next)
   }
 }
 
