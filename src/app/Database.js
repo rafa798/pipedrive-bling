@@ -1,15 +1,15 @@
-const driver = require('mongoose')
+const dbDriver = require('mongojs')
 
 class Database {
   constructor ({ databaseConfig, logger }) {
     this.client = null
+    this.db = null
     this.config = databaseConfig
     this.logger = logger
   }
 
-  connect () {
-    this.client = driver.connect(this.config.uri, this.config.options)
-    return this.client
+  async connect () {
+    this.db = dbDriver(this.config.uri, [], this.config.options)
   }
 
   disconnect () {
