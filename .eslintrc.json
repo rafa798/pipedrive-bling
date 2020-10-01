@@ -30,7 +30,8 @@
   },
   "ignorePatterns": [
     "coverage",
-    "node_modules"
+    "node_modules",
+    "resources"
   ],
   "overrides": [
     {
