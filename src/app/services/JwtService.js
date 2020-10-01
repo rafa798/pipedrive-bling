@@ -14,12 +14,11 @@ class JwtService {
     this.config = jwtConfig
   }
 
-  _create ({ id, sub, context }) {
+  _create ({ id, sub }) {
     const jwtPayload = {
       token: jwt.sign(
         {
           iss: this.config.issuer,
-          aud: context,
           sub: sub,
           uid: id
         },
