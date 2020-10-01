@@ -23,6 +23,7 @@ const Database = require('./app/Database')
 
 // Controllers imports
 const UserController = require('./app/controllers/UserController')
+const OrderController = require('./app/controllers/OrderController')
 
 // Error handlers imports
 const BadRequestErrorHandler = require('./app/support/error-handlers/BadRequestErrorHandler')
@@ -77,7 +78,8 @@ container.loadModules(['src/app/validators/**/!(*.spec).js'], {
 // Controllers injection
 container.register({
   controllers: asArray([
-    asClass(UserController).singleton()
+    asClass(UserController).singleton(),
+    asClass(OrderController).singleton()
   ])
 })
 
@@ -91,9 +93,7 @@ container.loadModules(['src/app/services/!(*.spec).js'], {
 })
 
 // Collections injection
-container.loadModules([
-  ['src/app/collections/**/!(*.spec).js', { injector: () => ({ timeout: 2000 }) }]
-], {
+container.loadModules(['src/app/collections/**/!(*.spec).js'], {
   resolverOptions: {
     register: asClass,
     lifetime: Lifetime.SINGLETON
@@ -101,9 +101,7 @@ container.loadModules([
 })
 
 // Repositories injection
-container.loadModules([
-  ['src/app/repositories/**/!(*.spec).js']
-], {
+container.loadModules(['src/app/repositories/**/!(*.spec).js'], {
   formatName: 'camelCase',
   resolverOptions: {
     register: asClass,
