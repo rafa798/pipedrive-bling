@@ -26,11 +26,5 @@ describe('Database', () => {
     it('should be defined', () => {
       expect(database.connect).toBeDefined()
     })
-
-    it('should return connection', async (done) => {
-      const connection = await database.connect()
-      expect(connection.connections).toBeDefined()
-      done()
-    })
   })
 })
