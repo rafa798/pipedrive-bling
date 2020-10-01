@@ -18,11 +18,23 @@ class UsersService {
     this.jwtService = jwtService
   }
 
+  async findById (id) {
+    return await new Promise((resolve, reject) => {
+      this.repo.findById(id, (err, result) => {
+        if (err) {
+          reject(err)
+        }
+
+        resolve(result)
+      })
+    })
+  }
+
   signup (user) {
     return new Promise((resolve, reject) => {
       this.repo.create(user, (err, result) => {
         if (err) {
-          return reject(new UniqueConstraintException('A user with this email address is already registered'))
+          return reject(new UniqueConstraintException('An user with this email address is already registered'))
         }
 
         const { _id } = result
@@ -48,7 +60,6 @@ class UsersService {
     const { token } = this.jwtService.createUserToken(user)
 
     return { token }
-    // return this.repo.passwordVerify(user.password)
   }
 }
 
