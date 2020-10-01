@@ -11,10 +11,9 @@ class JwtInterceptor {
    *Creates an instance of JwtInterceptor.
    * @memberof JwtInterceptor
    */
-  constructor ({ jwtConfig, usersService, cmsUsersService }) {
+  constructor ({ jwtConfig, usersService }) {
     this.config = jwtConfig
     this.usersService = usersService
-    this.cmsUsersService = cmsUsersService
   }
 
   verify (token) {
@@ -35,23 +34,17 @@ class JwtInterceptor {
   async authorize (req, res, next) {
     try {
       const [, token] = req.header('Authorization').split(' ')
-
       /** @type import('../../types/jwt-payload.d').JwtPayload */
       // @ts-ignore
-      const { uid, aud } = this.verify(token)
+      const { uid } = this.verify(token)
 
-      const regEx = new RegExp(`^\/(${aud}|\\*)\/`)
-
-      if (!req.path.match(regEx)) {
+      if (!uid) {
         return next(
-          createHttpError(403, 'You have no access to this resource')
+          createHttpError(401)
         )
       }
 
-      const user =
-        aud === 'customers'
-          ? await this.usersService.findOne({ id: uid })
-          : await this.cmsUsersService.findOne({ id: uid })
+      const user = await this.usersService.findById(uid)
 
       if (!user) return next(createHttpError(401, 'Unauthorized'))
 
